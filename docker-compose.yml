@@ -1,0 +1,40 @@
+  
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    networks:
+      - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cauebackend-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc/api`)
+      #### stripprefix for dashboard
+      - traefik.http.routers.cauebackend-web-secure.middlewares=backstrip
+      - traefik.http.middlewares.backstrip.stripprefix.prefixes=/doc/api
+      - traefik.http.routers.cauebackend-web-secure.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.cauebackend-web-secure.tls=true
+      - traefik.http.routers.cauebackend-web-secure.entrypoints=websecure
+      # if you have multiple ports exposed on the service, specify port in the web-secure service
+      - traefik.http.services.cauebackend-web-secure.loadbalancer.server.port=3333
+
+  frontend:
+    build: ./frontend
+    networks:
+    - traefik-public
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cauefrontend-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc`)
+      - traefik.http.routers.cauefrontend-web-secure.entrypoints=web
+      #### stripprefix for dashboard
+      - traefik.http.routers.cauefrontend-web-secure.middlewares=frontstrip
+      - traefik.http.middlewares.frontstrip.stripprefix.prefixes=/doc
+      - traefik.http.routers.cauebackend-web-secure.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.cauebackend-web-secure.tls=true
+      - traefik.http.routers.cauebackend-web-secure.entrypoints=websecure
+      # if you have multiple ports exposed on the service, specify port in the web-secure service
+      - traefik.http.services.cauefrontend-web-secure.loadbalancer.server.port=80
+
+networks:
+  traefik-public:
+    external: true
