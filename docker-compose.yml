@@ -24,16 +24,15 @@ services:
     - traefik-public
     labels:
       - traefik.enable=true
-      - traefik.http.routers.simplebffront-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc`)
-      - traefik.http.routers.simplebffront-web-secure.entrypoints=web
+      - traefik.http.routers.simplebffront.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc`)
       #### stripprefix for dashboard
-      - traefik.http.routers.simplebffront-web-secure.middlewares=simplebffrontmid
+      - traefik.http.routers.simplebffront.middlewares=simplebffrontmid
       - traefik.http.middlewares.simplebffrontmid.stripprefix.prefixes=/doc
       - traefik.http.routers.simplebffront.tls.certresolver=letsencryptresolver
       - traefik.http.routers.simplebffront.tls=true
       - traefik.http.routers.simplebffront.entrypoints=websecure
       # if you have multiple ports exposed on the service, specify port in the web-secure service
-      - traefik.http.services.simplebffront-web-secure.loadbalancer.server.port=80
+      - traefik.http.services.simplebffront.loadbalancer.server.port=80
 
 networks:
   traefik-public:
