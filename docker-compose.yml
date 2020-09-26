@@ -8,15 +8,15 @@ services:
       - traefik-public
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cauebackend-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc/api`)
+      - traefik.http.routers.simplebfback.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc/api`)
       #### stripprefix for dashboard
-      - traefik.http.routers.cauebackend-web-secure.middlewares=backstrip
-      - traefik.http.middlewares.backstrip.stripprefix.prefixes=/doc/api
-      - traefik.http.routers.cauebackend-web-secure.tls.certresolver=letsencryptresolver
-      - traefik.http.routers.cauebackend-web-secure.tls=true
-      - traefik.http.routers.cauebackend-web-secure.entrypoints=websecure
+      - traefik.http.routers.simplebfback.middlewares=simplebfbackmid
+      - traefik.http.middlewares.simplebfbackmid.stripprefix.prefixes=/doc/api
+      - traefik.http.routers.simplebfback.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.simplebfback.tls=true
+      - traefik.http.routers.simplebfback.entrypoints=websecure
       # if you have multiple ports exposed on the service, specify port in the web-secure service
-      - traefik.http.services.cauebackend-web-secure.loadbalancer.server.port=3333
+      - traefik.http.services.simplebfback.loadbalancer.server.port=3333
 
   frontend:
     build: ./frontend
@@ -24,16 +24,16 @@ services:
     - traefik-public
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cauefrontend-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc`)
-      - traefik.http.routers.cauefrontend-web-secure.entrypoints=web
+      - traefik.http.routers.simplebffront-web-secure.rule=Host(`simplebf.caue.ga`) && PathPrefix(`/doc`)
+      - traefik.http.routers.simplebffront-web-secure.entrypoints=web
       #### stripprefix for dashboard
-      - traefik.http.routers.cauefrontend-web-secure.middlewares=frontstrip
-      - traefik.http.middlewares.frontstrip.stripprefix.prefixes=/doc
-      - traefik.http.routers.cauebackend-web-secure.tls.certresolver=letsencryptresolver
-      - traefik.http.routers.cauebackend-web-secure.tls=true
-      - traefik.http.routers.cauebackend-web-secure.entrypoints=websecure
+      - traefik.http.routers.simplebffront-web-secure.middlewares=simplebffrontmid
+      - traefik.http.middlewares.simplebffrontmid.stripprefix.prefixes=/doc
+      - traefik.http.routers.simplebffront.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.simplebffront.tls=true
+      - traefik.http.routers.simplebffront.entrypoints=websecure
       # if you have multiple ports exposed on the service, specify port in the web-secure service
-      - traefik.http.services.cauefrontend-web-secure.loadbalancer.server.port=80
+      - traefik.http.services.simplebffront-web-secure.loadbalancer.server.port=80
 
 networks:
   traefik-public:
